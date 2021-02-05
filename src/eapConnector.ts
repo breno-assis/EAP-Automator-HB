@@ -76,10 +76,11 @@ export class EAPConnector {
 
       if (isConnected) {
     
-        this.platform.log.debug('3. GET LOGIN STATUS END');        
    
         try {
           const loginStatusResponse = await this.getLoginStatus(); 
+
+          this.platform.log.debug('2. GET LOGIN STATUS Connector END');
 
           this.platform.log.debug('3. GET LOGIN STATUS Response: ', loginStatusResponse.data);
 
@@ -91,9 +92,10 @@ export class EAPConnector {
           
         } catch (error) {
           this.platform.log.debug('2. GET LOGIN STATUS FAIL! Error: ', error);
-          this.platform.log.debug('3. GET LOGIN STATUS END');
           canLogin = false;
         }
+
+        this.platform.log.debug('3. GET LOGIN STATUS END');        
 
       }         
 
