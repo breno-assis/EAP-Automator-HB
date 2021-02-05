@@ -1,5 +1,5 @@
-import { strict } from 'assert';
-import { Service, PlatformAccessory, CharacteristicValue, CharacteristicSetCallback, CharacteristicGetCallback, Int32 } from 'homebridge';
+//import { strict } from 'assert';
+import { Service, PlatformAccessory, CharacteristicValue, CharacteristicSetCallback, CharacteristicGetCallback } from 'homebridge';
 
 import { ExampleHomebridgePlatform } from './platform';
 import { EAPConnector } from './eapConnector';
@@ -25,7 +25,6 @@ export class ExamplePlatformAccessory {
     IsRebooting: false,
   }; 
 
-  private connectorProcess: any;
   private eapConnector: EAPConnector;
 
   constructor(
@@ -34,7 +33,8 @@ export class ExamplePlatformAccessory {
   ) {
 
     this.counter = 0;
-    this.eapConnector = new EAPConnector(platform.config.ip as string, platform.config.username as string, platform.config.password as string, this.platform);
+    this.eapConnector = new EAPConnector(platform.config.ip as string, platform.config.username as string, 
+      platform.config.password as string, this.platform);
 
     // set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
@@ -45,7 +45,8 @@ export class ExamplePlatformAccessory {
     // get the LightBulb service if it exists, otherwise create a new LightBulb service
     // you can create multiple services for each accessory
     this.servicePower = this.accessory.getService('Power') || this.accessory.addService(this.platform.Service.Switch, 'Power', 'btn-pw');
-    //this.servicePower = this.accessory.getService('Power') || this.accessory.addService(this.platform.Service.StatelessProgrammableSwitch, 'Power', 'btn-pw'); 
+    //this.servicePower = this.accessory.getService('Power') || 
+    //this.accessory.addService(this.platform.Service.StatelessProgrammableSwitch, 'Power', 'btn-pw'); 
 
     // set the service name, this is what is displayed as the default name on the Home app
     // in this example we are using the name we stored in the `accessory.context` in the `discoverDevices` method.
@@ -60,7 +61,8 @@ export class ExamplePlatformAccessory {
       .on('get', this.getOn.bind(this));               // GET - bind to the `getOn` method below
 
    
-    this.serviceFrontLED = this.accessory.getService(this.platform.Service.Lightbulb) || this.accessory.addService(this.platform.Service.Lightbulb);
+    this.serviceFrontLED = this.accessory.getService(this.platform.Service.Lightbulb) || 
+    this.accessory.addService(this.platform.Service.Lightbulb);
     this.serviceFrontLED.setCharacteristic(this.platform.Characteristic.Name, 'EAP 225 Front LED');
   
     this.serviceFrontLED.getCharacteristic(this.platform.Characteristic.On)
@@ -68,7 +70,8 @@ export class ExamplePlatformAccessory {
       .on('get', this.getLEDOn.bind(this));               // GET - bind to the `getOn` method below
 
 
-    this.serviceRebootButton = this.accessory.getService('Reboot') || this.accessory.addService(this.platform.Service.Switch, 'Reboot', 'btn-reboot');
+    this.serviceRebootButton = this.accessory.getService('Reboot') || 
+    this.accessory.addService(this.platform.Service.Switch, 'Reboot', 'btn-reboot');
     this.serviceRebootButton.setCharacteristic(this.platform.Characteristic.Name, 'Reboot EAP 225');
 
     this.serviceRebootButton.getCharacteristic(this.platform.Characteristic.On)

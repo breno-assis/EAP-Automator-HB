@@ -1,5 +1,4 @@
-import { Http2ServerResponse } from 'http2';
-import axios, { AxiosRequestConfig, AxiosPromise, AxiosResponse, AxiosError } from 'axios';
+import axios from 'axios';
 import {Md5} from 'md5-typescript';
 import { ExampleHomebridgePlatform } from './platform';
 
@@ -52,7 +51,7 @@ export class EAPConnector {
                   
         })
         .catch( (error) => {
-          this.platform.log.debug('2. CONNECT Connector COOKIE FAIL');
+          this.platform.log.debug('2. CONNECT Connector COOKIE FAIL:', error);
           this.platform.log.debug('3. CONNECT Connector END');
         });
               
@@ -100,7 +99,7 @@ export class EAPConnector {
 
 
       if (canLogin) {
-        const loginResponse = await axios.post(this.EAP_Url, 
+        await axios.post(this.EAP_Url, 
           formData                  
           ,
           {
@@ -112,7 +111,7 @@ export class EAPConnector {
                       'Origin':  this.EAP_Url,
                       'X-Requested-With': 'XMLHttpRequest',
                     },
-          }).then( (response) => {
+          }).then( () => {
                  
           this.platform.log.debug('2. LOGIN Connector SUCCESS!');
           this.platform.log.debug('3. LOGIN Connector END');
@@ -120,10 +119,11 @@ export class EAPConnector {
 
         })
           .catch( (error) => {
-            this.platform.log.debug('2. LOGIN Connector FAIL! Error: ', error);
+            this.platform.log.error('2. LOGIN Connector FAIL! Error: ', error);
             this.platform.log.debug('3. LOGIN Connector END');
             isLoggedIn = false;
           });
+
 
       } else {
         this.platform.log.debug('2. LOGIN Connector FAIL! Error: Cant Log In');
@@ -264,7 +264,7 @@ export class EAPConnector {
 
       this.platform.log.debug('1. GET Online Status START');
 
-      const response = await axios.get(this.EAP_Url + '/data/rebootState.json', 
+      await axios.get(this.EAP_Url + '/data/rebootState.json', 
         {
           headers: 
                 {
@@ -273,14 +273,16 @@ export class EAPConnector {
                   'Origin':  this.EAP_Url,
                   'X-Requested-With': 'XMLHttpRequest',
                 },
-        }).then( (response) => {                   
+        }).then( () => {   
+        //this.platform.log.debug('2. GET Online Status STATUS: ', response );                 
         isOnline = true;
       })
         .catch( (error) => {
+          this.platform.log.error('2. GET Online Status ERROR: ', error );
           isOnline = false;
         });
 
-      this.platform.log.debug('3. GET Online Status STATUS: ', isOnline );
+      this.platform.log.debug('2. GET Online Status STATUS: ', isOnline );
             
       this.platform.log.debug('3. GET Online Status END');
       return isOnline;
@@ -300,7 +302,7 @@ export class EAPConnector {
       if (isLoggedIn) {
 
         ///data/configReboot.json
-        const response = await axios.get(this.EAP_Url + '/data/configReboot.json', 
+        await axios.get(this.EAP_Url + '/data/configReboot.json', 
           {
             headers: 
                 {
@@ -310,12 +312,12 @@ export class EAPConnector {
                   'Origin':  this.EAP_Url,
                   'X-Requested-With': 'XMLHttpRequest',
                 },
-          }).then( (response) => {
-              
+          }).then( () => {
+          //this.platform.log.debug('2. SET REBOOT Request Connector Response: ', response);
           isRequested = true;
         })
           .catch( (error) => {
-           
+            this.platform.log.error('2. SET REBOOT Request Connector ERROR: ', error);
             isRequested = false;
           });
 
