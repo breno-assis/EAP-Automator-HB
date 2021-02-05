@@ -1,10 +1,11 @@
 import { Http2ServerResponse } from 'http2';
+import axios, { AxiosRequestConfig, AxiosPromise, AxiosResponse, AxiosError } from 'axios';
 import {Md5} from 'md5-typescript';
 import { ExampleHomebridgePlatform } from './platform';
 
 export class EAPConnector {
 
-    private axios = require('axios').default;
+    //private axios = await require('axios').default;
     private sessionCookie = '';
 
     private EAP_Ip: string;
@@ -42,7 +43,7 @@ export class EAPConnector {
     async connect() {
       this.platform.log.debug('1. CONNECT Connector START');
 
-      return this.axios.get(this.EAP_Url)
+      return axios.get(this.EAP_Url)
         .then( (response) => {
 
           this.extractCookie(response.headers['set-cookie']);
@@ -75,21 +76,31 @@ export class EAPConnector {
       const formData = 'username='+ this.EAP_User +'&password=' + this.EAP_PasswordHash;
 
       if (isConnected) {
-        await this.getLoginStatus().then( (response) => {
+    
+        this.platform.log.debug('3. GET LOGIN STATUS END');        
+   
+        try {
+          const loginStatusResponse = await this.getLoginStatus(); 
 
-          this.platform.log.debug('3. GET LOGIN STATUS Response: ', response.data);
-          if (response.data.error == 0) {
+          this.platform.log.debug('3. GET LOGIN STATUS Response: ', loginStatusResponse.data);
+
+          if (loginStatusResponse.data.error === 0) {
             canLogin = true;
           } else{
             canLogin = false;
           }    
-          this.platform.log.debug('3. GET LOGIN STATUS END');        
-        });
+          
+        } catch (error) {
+          this.platform.log.debug('2. GET LOGIN STATUS FAIL! Error: ', error);
+          this.platform.log.debug('3. GET LOGIN STATUS END');
+          canLogin = false;
+        }
+
       }         
 
 
       if (canLogin) {
-        const loginResponse = await this.axios.post(this.EAP_Url, 
+        const loginResponse = await axios.post(this.EAP_Url, 
           formData                  
           ,
           {
@@ -129,7 +140,7 @@ export class EAPConnector {
 
       ///data/login.json
 
-      return this.axios.post(this.EAP_Url + '/data/login.json',
+      return axios.post(this.EAP_Url + '/data/login.json',
         'operation=read',
         {
           headers: 
@@ -140,12 +151,8 @@ export class EAPConnector {
               'X-Requested-With': 'XMLHttpRequest',
             },
         },
-      )
-        .catch( (error) => {
-          this.platform.log.debug('2. GET LOGIN STATUS FAIL! Error: ', error);
-          this.platform.log.debug('3. GET LOGIN STATUS END');
-          return 5;
-        });
+      );
+       
       
 
     }
@@ -166,7 +173,7 @@ export class EAPConnector {
       if (isLoggedIn) {
         const formData = 'operation=read';
 
-        const response = await this.axios.post(this.EAP_Url + '/data/ledctrl.json', 
+        const response = await axios.post(this.EAP_Url + '/data/ledctrl.json', 
           formData,
           {
             headers: 
@@ -225,7 +232,7 @@ export class EAPConnector {
 
         const formData = 'operation=write&enable=' + internalValue;
 
-        const response = await this.axios.post(this.EAP_Url + '/data/ledctrl.json', 
+        const response = await axios.post(this.EAP_Url + '/data/ledctrl.json', 
           formData,
           {
             headers: 
@@ -257,7 +264,7 @@ export class EAPConnector {
 
       this.platform.log.debug('1. GET Online Status START');
 
-      const response = await this.axios.get(this.EAP_Url + '/data/rebootState.json', 
+      const response = await axios.get(this.EAP_Url + '/data/rebootState.json', 
         {
           headers: 
                 {
@@ -293,7 +300,7 @@ export class EAPConnector {
       if (isLoggedIn) {
 
         ///data/configReboot.json
-        const response = await this.axios.get(this.EAP_Url + '/data/configReboot.json', 
+        const response = await axios.get(this.EAP_Url + '/data/configReboot.json', 
           {
             headers: 
                 {
