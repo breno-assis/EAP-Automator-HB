@@ -11,7 +11,7 @@ import { ExamplePlatformAccessory } from './platformAccessory';
 export class ExampleHomebridgePlatform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service = this.api.hap.Service;
   public readonly Characteristic: typeof Characteristic = this.api.hap.Characteristic;
-
+ 
   // this is used to track restored cached accessories
   public readonly accessories: PlatformAccessory[] = [];
 
@@ -56,13 +56,10 @@ export class ExampleHomebridgePlatform implements DynamicPlatformPlugin {
     // or a user-defined array in the platform config.
     const exampleDevices = [
       {
-        exampleUniqueId: 'ABCD',
-        exampleDisplayName: 'Bedroom',
+        exampleUniqueId: '0C-80-63-1F-7F-1A',
+        exampleDisplayName: 'EAP 225 Access Point',
       },
-      {
-        exampleUniqueId: 'EFGH',
-        exampleDisplayName: 'Kitchen',
-      },
+         
     ];
 
     // loop over the discovered devices and register each one if it has not already been registered

@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "EAPAutomator",
   "pluginType": "platform",
   "singular": true,
   "schema": {
@@ -9,7 +9,22 @@
         "title": "Name",
         "type": "string",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "default": "EAP 225 Automator"
+      },
+      "ip":{
+        "title": "EAP IP",
+        "type": "string",
+        "required": true
+      },
+      "username":{
+        "title": "EAP Username",
+        "type": "string",
+        "required": true
+      },
+      "password":{
+        "title": "EAP Password",
+        "type": "string",
+        "required": true
       }
     }
   }
